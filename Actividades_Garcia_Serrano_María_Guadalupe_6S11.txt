@@ -1,0 +1,88 @@
+create table tb_primera(
+id_producto number (12), 
+nombre_producto varchar (50), 
+tipo_producto varchar (35), 
+costo_producto number (10));
+
+create table tb_segunda (
+descripcion varchar (100));
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+create or replace trigger tr_actualizar
+after update on tb_primera
+for each row
+begin
+    insert into tb_segunda values ('Se ha actualizado el dato');
+end tr_actualizar;
+
+create or replace trigger tr_insertar
+after insert on tb_primera
+for each row
+begin
+     insert into tb_segunda values ('Se ha insertado el dato');
+end tr_insertar;
+
+create or replace trigger tr_eliminar
+after delete on tb_primera
+for each row
+begin
+    insert into tb_segunda values ('Se ha eliminado el dato');
+end tr_eliminar;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+create or replace trigger tr_letra_d
+after insert on tb_primera
+for each row
+Declare
+  letra NVARCHAR2(15);
+begin
+ letra :='';
+ letra := letra|| SUBSTR(:NEW.nombre_producto, 1, 1);
+ if(letra='d') then begin
+    insert into tb_segunda values ('se agregó un producto y su nombre empieza con d '|| SYSTIMESTAMP);
+ end; end if;
+end tr_letra_d;
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+create or replace trigger tr_eliminar_producto
+before delete on tb_primera
+for each row
+Declare
+  produc number(10);
+begin
+ produc:='';
+ produc:=(:OLD.costo_producto);
+ if(produc<=12) then begin
+        insert into tb_segunda values ('se eliminó un producto humilde que quería comprar con lo que tenia de mi pasaje :,c ');
+ end; end if;
+end tr_eliminar_producto;
+
+insert into tb_primera values (001, 'donitas', 'pan', 20);
+insert into tb_primera values (002, 'rebanada', 'pan', 10);
+insert into tb_primera values (003, 'mantecadas', 'pan', 25);
+insert into tb_primera values (004, 'nito', 'pan', 15);
+insert into tb_primera values (005, 'buñuelos', 'pan', 20);
+insert into tb_primera values (021, 'doritos', 'botana', 15);
+insert into tb_primera values (022, 'paketaxo', 'botana', 56);
+insert into tb_primera values (023, 'Sabritas adobadas', 'botana', 35);
+insert into tb_primera values (024, 'crujitos', 'botana', 15);
+insert into tb_primera values (025, 'sabritones', 'botana', 50);
+insert into tb_primera values (051, 'pulparindo', 'dulce', 8);
+insert into tb_primera values (052, 'picafresa', 'dulce', 2);
+insert into tb_primera values (053, 'mazapan', 'dulce', 8);
+insert into tb_primera values (054, 'panditas', 'dulce', 18);
+insert into tb_primera values (055, 'dragoncito', 'dulce', 3);
+
+delete from tb_primera where id_producto=5;
+ 
+update tb_primera set nombre_producto='Sabritas saladas' where id_producto=023;
+
+select * from tb_primera;
+
+select * from tb_segunda;
+
+drop table tb_primera;
+
+drop table tb_segunda;
+
+
